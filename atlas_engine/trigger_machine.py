@@ -4,7 +4,15 @@ from pathlib import Path
 import argparse
 import json
 
+
 ROOT = Path(__file__).resolve().parents[1]
+CONFIG_PATH = ROOT / "atlas_engine" / "config" / "trigger_rules.json"
+
+def load_rules():
+    return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+
+RULES = load_rules()
+KEYWORDS = RULES["keywords"]
 
 @dataclass
 class Event:
@@ -25,14 +33,6 @@ class TriggerResult:
     reason: str
     next_action: str
     output_path: str
-
-KEYWORDS = {
-    "technology": ["突破", "发布", "新技术", "模型", "芯片", "量产", "商业化"],
-    "company": ["财报", "公告", "中标", "订单", "扩产", "利润", "营收", "客户"],
-    "policy": ["政策", "限制", "出口管制", "补贴", "规划", "监管"],
-    "market": ["价格", "供需", "产能", "库存", "涨价", "降价"],
-    "risk": ["制裁", "事故", "违约", "暴跌", "调查", "战争"],
-}
 
 def infer_event_type(text: str) -> str:
     for event_type, words in KEYWORDS.items():
@@ -73,6 +73,16 @@ def score_event(event: Event) -> tuple[int, list[str]]:
 
     return score, reasons
 
+def decide_level(score: int):
+
+    for item in RULES["levels"]:
+
+        if score <= item["max_score"]:
+
+            return item
+
+    return RULES["levels"][-1]
+
 def decide_entry(event: Event) -> str:
     text = f"{event.title}\n{event.content}"
     event_type = event.event_type if event.event_type != "unknown" else infer_event_type(text)
@@ -93,21 +103,11 @@ def trigger(event: Event) -> TriggerResult:
     score, reasons = score_event(event)
     entry = decide_entry(event)
 
-    if score <= 0:
-        level, name, should = 0, "忽略", False
-        action = "不进入 Atlas"
-    elif score <= 2:
-        level, name, should = 1, "记录", False
-        action = "进入 Observation Log"
-    elif score == 3:
-        level, name, should = 2, "跟踪", False
-        action = "进入 Tracking 或 Discovery"
-    elif score <= 6:
-        level, name, should = 3, "研究", True
-        action = "启动研究协议"
-    else:
-        level, name, should = 4, "重估", True
-        action = "启动 Bear First Review"
+    level_rule = decide_level(score)
+    level = level_rule["level"]
+    name = level_rule["name"]
+    should = level_rule["should_research"]
+    action = level_rule["action"]
 
     today = datetime.now().strftime("%Y-%m-%d")
     safe_title = event.title.replace("/", "_").replace(" ", "_")[:40]

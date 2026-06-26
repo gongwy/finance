@@ -1,0 +1,16 @@
+{
+  "levels": [
+    {"max_score": 0, "level": 0, "name": "忽略", "should_research": false, "action": "不进入 Atlas"},
+    {"max_score": 2, "level": 1, "name": "记录", "should_research": false, "action": "进入 Observation Log"},
+    {"max_score": 3, "level": 2, "name": "跟踪", "should_research": false, "action": "进入 Tracking 或 Discovery"},
+    {"max_score": 6, "level": 3, "name": "研究", "should_research": true, "action": "启动研究协议"},
+    {"max_score": 999, "level": 4, "name": "重估", "should_research": true, "action": "启动 Bear First Review"}
+  ],
+  "keywords": {
+    "technology": ["突破", "发布", "新技术", "模型", "芯片", "量产", "商业化"],
+    "company": ["财报", "公告", "中标", "订单", "扩产", "利润", "营收", "客户"],
+    "policy": ["政策", "限制", "出口管制", "补贴", "规划", "监管"],
+    "market": ["价格", "供需", "产能", "库存", "涨价", "降价"],
+    "risk": ["制裁", "事故", "违约", "暴跌", "调查", "战争"]
+  }
+}
