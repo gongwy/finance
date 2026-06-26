@@ -99,7 +99,7 @@ def trigger(event: Event) -> TriggerResult:
     elif score <= 2:
         level, name, should = 1, "记录", False
         action = "进入 Observation Log"
-    elif score <= 4:
+    elif score == 3:
         level, name, should = 2, "跟踪", False
         action = "进入 Tracking 或 Discovery"
     elif score <= 6:
