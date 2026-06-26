@@ -1,8 +1,12 @@
 # Project Atlas
 
+Atlas focuses on long-term value flows driven by technology, industry and capital allocation. It does not attempt to model every aspect of human civilization.
+
 一个持续十年的长期投资研究计划。
 
-目标不是预测市场，而是理解世界。
+目标不是预测市场，而是研究人类生产力如何持续提升，以及价值如何围绕生产力重新分配。
+
+Atlas v1 聚焦于生产力驱动型价值流（Productivity-driven Value Flows），这是《中国工业冠军研究库》的研究边界。
 
 ⸻
 
