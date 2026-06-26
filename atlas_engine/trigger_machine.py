@@ -30,7 +30,10 @@ class TriggerResult:
     trigger_name: str
     should_research: bool
     research_entry: str
+    score: int
     reason: str
+    review_required: bool
+    review_note: str
     next_action: str
     output_path: str
 
@@ -113,12 +116,18 @@ def trigger(event: Event) -> TriggerResult:
     safe_title = event.title.replace("/", "_").replace(" ", "_")[:40]
     output_path = f"04_Research/Notes/{today}_{safe_title}.md"
 
+    review_required = level >= 2
+    review_note = "需要人工确认事件是否真的影响价值流/价值节点" if review_required else "无需人工确认"
+
     return TriggerResult(
         trigger_level=level,
         trigger_name=name,
         should_research=should,
         research_entry=entry,
+        score=score,
         reason="；".join(reasons) if reasons else "未发现明显价值流影响",
+        review_required=review_required,
+        review_note=review_note,
         next_action=action,
         output_path=output_path,
     )
@@ -147,12 +156,16 @@ def save_result(event: Event, result: TriggerResult):
 - Research Entry: {result.research_entry}
 - Reason: {result.reason}
 - Next Action: {result.next_action}
+- Score: {result.score}
+- Review Required: {result.review_required}
+- Review Note: {result.review_note}
 
 ## Related
 
 - Value Flows: {event.related_flows or []}
 - Value Nodes: {event.related_nodes or []}
 - Companies: {event.related_companies or []}
+
 """
     path.write_text(content, encoding="utf-8")
     return path
